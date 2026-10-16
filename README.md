@@ -10,7 +10,7 @@ It's an internal audit of our products, our processes and our intentions, asking
 
 ## What's inside
 
-The page has five tabs, laid out like folder tabs:
+The page has five tabs, laid out like folder tabs: https://softqueerwealth-png.github.io/sqw-home-website-plus-greenbook-dev/
 
 | Tab | What it's for |
 |---|---|
