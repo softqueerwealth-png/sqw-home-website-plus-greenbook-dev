@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Quarterly Check-in</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=Courier+Prime:wght@400;700&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+
+/* Layout: a single paper "folder sheet" on a stone desk, with file-folder tabs as navigation (from the SQW media kit). */
+:root{
+  --desk:#E4DED2; --paper:#F7F4EE; --paper-2:#EEE8DD; --ink:#2A2724; --ink-2:#5D554C; --rule:#D3CABB; --rule-2:#BFB5A4;
+  --accent:#B4521F; --accent-ink:#9A4418;
+  --sqw:#B4521F; --tmp:#008573; --ss:#7A52A3;
+  --good:#3A7432; --warn:#9A6200; --bad:#AE372B; --good-bg:#E3EBD9; --warn-bg:#F4E6CA; --bad-bg:#F4DCD6;
+  --field:#FFFDF8; --focus:#B4521F;
+  --serif:"Instrument Serif","Times New Roman",Times,serif;
+  --sans:"Instrument Sans",-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:"Courier Prime","Courier New",Courier,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --desk:#14110E; --paper:#1F1A16; --paper-2:#29221C; --ink:#EFE8DC; --ink-2:#B3A898; --rule:#3B322A; --rule-2:#544839;
+  --accent:#D06E36; --accent-ink:#E58A55;
+  --sqw:#D06E36; --tmp:#1FA88D; --ss:#9F7FD6;
+  --good:#7DBF72; --warn:#DDA645; --bad:#E57264; --good-bg:#24321F; --warn-bg:#3A2E16; --bad-bg:#3D211C;
+  --field:#262019; --focus:#E58A55; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --desk:#14110E; --paper:#1F1A16; --paper-2:#29221C; --ink:#EFE8DC; --ink-2:#B3A898; --rule:#3B322A; --rule-2:#544839;
+  --accent:#D06E36; --accent-ink:#E58A55;
+  --sqw:#D06E36; --tmp:#1FA88D; --ss:#9F7FD6;
+  --good:#7DBF72; --warn:#DDA645; --bad:#E57264; --good-bg:#24321F; --warn-bg:#3A2E16; --bad-bg:#3D211C;
+  --field:#262019; --focus:#E58A55; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--desk);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;
+  padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1100px;margin:0 auto}
+h1,h2,h3{font-family:var(--serif);font-weight:400;text-wrap:balance;margin:0;letter-spacing:-.005em}
+h1{font-size:clamp(34px,5.4vw,56px);line-height:1}
+h2{font-size:clamp(26px,3.4vw,36px);line-height:1.05}
+h3{font-size:22px;line-height:1.15}
+p{margin:0}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.muted{color:var(--ink-2)}
+.small{font-size:13px}
+.serif-i{font-family:var(--serif);font-style:italic}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* masthead */
+.mast{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+.mast .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-bottom:8px}
+.mast-right{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.who{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)}
+.who img{width:26px;height:26px;border-radius:50%}
+.qsel{display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--rule-2);border-radius:999px;padding:4px 6px 4px 14px}
+.qsel label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.qsel select{border:0;background:transparent;font-family:var(--serif);font-size:20px;padding:0 4px;cursor:pointer}
+
+/* folder tabs */
+.tabs{display:flex;gap:4px;overflow-x:auto;padding-top:6px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:var(--paper-2);border:1px solid var(--rule);border-bottom:0;border-radius:10px 10px 0 0;
+  padding:10px 18px 9px;font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);cursor:pointer;position:relative;top:1px}
+.tab .n{opacity:.6;margin-right:6px}
+.tab[aria-selected="true"]{background:var(--paper);color:var(--accent-ink);font-weight:700;border-color:var(--rule-2);z-index:2}
+.tab:hover{color:var(--ink)}
+.sheet{background:var(--paper);border:1px solid var(--rule-2);border-radius:0 12px 12px 12px;padding:clamp(20px,4vw,44px);position:relative;z-index:1;min-height:420px}
+.panel{display:flex;flex-direction:column;gap:32px}
+.intro{display:flex;flex-direction:column;gap:10px;max-width:68ch}
+.notice{border:1px dashed var(--rule-2);border-radius:10px;padding:14px 16px;color:var(--ink-2);font-size:14px}
+
+/* north star */
+.ns-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:40px}
+.ns-grid>*{min-width:0}
+.why p+p{margin-top:12px}
+.pull{font-family:var(--serif);font-style:italic;font-size:22px;line-height:1.3;color:var(--ink)}
+.star{background:var(--paper-2);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:8px}
+.star .big{font-family:var(--serif);font-size:30px;line-height:1.1}
+.journey{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;position:relative;padding-top:20px}
+.journey::before{content:"";position:absolute;top:6px;left:6px;right:12%;height:1px;background:var(--rule-2)}
+.journey div{position:relative;font-size:13.5px}
+.journey div::before{content:"";position:absolute;top:-20px;left:0;width:12px;height:12px;border-radius:50%;border:1.5px solid var(--ink-2);background:var(--paper)}
+.journey div:last-child::before{background:var(--accent);border-color:var(--accent)}
+.journey b{display:block;font-family:var(--mono);font-weight:400;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin-bottom:2px}
+.principles{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.principles li{display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start}
+.num{width:28px;height:28px;border-radius:50%;border:1px solid var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--serif);font-size:16px}
+.principles strong{font-family:var(--serif);font-weight:400;font-size:19px;display:block;line-height:1.2}
+.ventures{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.venture{border:1.5px solid var(--vc);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.venture .label{color:var(--vc)}
+.venture .role{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--vc)}
+.flows{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px 24px;list-style:none;padding:0;margin:0}
+.flows li{border-top:1px solid var(--rule);padding-top:8px;font-size:14px}
+.flows .dir{font-family:var(--mono);font-size:12px;letter-spacing:.06em;display:block}
+.cycle{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;counter-reset:c}
+.cycle li{counter-increment:c;background:var(--paper-2);border-radius:999px;padding:6px 14px 6px 8px;font-size:14px;display:flex;gap:8px;align-items:center}
+.cycle li::before{content:counter(c);width:22px;height:22px;border-radius:50%;background:var(--paper);display:grid;place-items:center;font-family:var(--serif);color:var(--accent-ink)}
+.cycle .arrow{background:none;padding:0;color:var(--ink-2)}
+.cycle .arrow::before{display:none}
+.books{background:var(--paper-2);border-radius:12px;padding:18px 20px;display:grid;grid-template-columns:auto 1fr;gap:6px 20px}
+.books ul{margin:0;padding-left:18px;font-size:14px}
+.question{font-family:var(--serif);font-style:italic;font-size:clamp(24px,3.4vw,34px);line-height:1.2;max-width:30ch}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:2px 9px;border:1px solid currentColor;white-space:nowrap}
+.st-current{color:var(--ink)} .st-historical{color:var(--ink-2)} .st-proposed{color:var(--accent-ink)} .st-aspirational{color:var(--ss)} .st-establish{color:var(--warn)}
+.vtag{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.06em;color:var(--vc)}
+.v-SQW{--vc:var(--sqw)} .v-TMPs{--vc:var(--tmp)} .v-SS{--vc:var(--ss)}
+.prog{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;border-radius:6px;padding:2px 8px}
+.prog::before{font-size:11px}
+.p-Achieved{background:var(--good-bg);color:var(--good)} .p-Achieved::before{content:"●"}
+.p-Ontrack{background:var(--good-bg);color:var(--good)} .p-Ontrack::before{content:"◐"}
+.p-Atrisk{background:var(--warn-bg);color:var(--warn)} .p-Atrisk::before{content:"▲"}
+.p-Missed,.p-Behind{background:var(--bad-bg);color:var(--bad)} .p-Missed::before,.p-Behind::before{content:"■"}
+.p-Notstarted,.p-Paused,.p-None{background:var(--paper-2);color:var(--ink-2)} .p-Notstarted::before,.p-Paused::before,.p-None::before{content:"○"}
+
+/* filters */
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.fbtn{border:1px solid var(--rule-2);background:transparent;border-radius:999px;padding:5px 14px;font-size:13.5px;cursor:pointer}
+.fbtn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* goals */
+.vgroup{display:flex;flex-direction:column;gap:12px}
+.vhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1.5px solid var(--vc);padding-bottom:8px}
+.vhead h3{color:var(--ink)}
+.vhead .vtag{margin-left:auto}
+.goals{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.goal{border:1px solid var(--rule);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--paper)}
+.goal-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.goal h4{margin:0;font-weight:600;font-size:15.5px;line-height:1.3}
+.goal .area{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.fig{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.fig .from{font-size:13px;color:var(--ink-2)}
+.fig .to{font-family:var(--serif);font-size:28px;line-height:1;font-variant-numeric:tabular-nums}
+.fig .to.text{font-family:var(--sans);font-size:15px;line-height:1.35}
+.goal .why{font-size:14px}
+.goal dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:13px}
+.goal dt{color:var(--ink-2)} .goal dd{margin:0}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent-ink);font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;align-self:flex-start}
+.btn{border:1px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:8px;padding:9px 16px;font-weight:600;font-size:14px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.danger{background:transparent;color:var(--bad);border-color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* forms */
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field>span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.field input,.field select,.field textarea{background:var(--field);border:1px solid var(--rule-2);border-radius:7px;padding:8px 10px;width:100%;font-size:14.5px}
+.field textarea{resize:vertical;min-height:40px}
+.editgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.editgrid .wide{grid-column:1/-1}
+
+/* check-in */
+.meter{display:flex;flex-direction:column;gap:6px}
+.meterbar{height:8px;border-radius:999px;background:var(--paper-2);overflow:hidden}
+.meterbar i{display:block;height:100%;background:var(--accent);border-radius:999px}
+.crow{border:1px solid var(--rule);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:minmax(200px,1.1fr) 2fr;gap:16px}
+.crow>*{min-width:0}
+.crow .meta{display:flex;flex-direction:column;gap:4px}
+.crow .meta h4{margin:0;font-size:15px;font-weight:600}
+.crow .tgt{font-size:13px;color:var(--ink-2)}
+.crow .inputs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.crow .inputs .wide{grid-column:1/-1}
+.saved{font-size:12px;color:var(--ink-2);min-height:18px}
+.saved.err{color:var(--bad)}
+.hint{font-size:12.5px;color:var(--ink-2)}
+
+/* pulse */
+.dim{display:grid;grid-template-columns:minmax(180px,1fr) 2fr;gap:12px 20px;align-items:center;padding:12px 0;border-top:1px solid var(--rule)}
+.dim>*{min-width:0}
+.dim h4{margin:0;font-family:var(--serif);font-weight:400;font-size:20px;line-height:1.15}
+.scale{display:flex;gap:4px;flex-wrap:wrap}
+.scale label{position:relative}
+.scale input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.scale span{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--rule-2);font-variant-numeric:tabular-nums;font-size:14px;cursor:pointer}
+.scale input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff}
+.scale input:focus-visible+span{outline:2px solid var(--focus);outline-offset:2px}
+.seg{display:inline-flex;border:1px solid var(--rule-2);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.seg label{position:relative}
+.seg input{position:absolute;opacity:0;inset:0;margin:0}
+.seg span{display:block;padding:6px 12px;font-size:13.5px;cursor:pointer;border-right:1px solid var(--rule)}
+.seg label:last-child span{border-right:0}
+.seg input:checked+span{background:var(--ink);color:var(--paper)}
+.seg input:focus-visible+span{outline:2px solid var(--focus);outline-offset:-2px}
+.prin{display:grid;grid-template-columns:minmax(180px,1fr) auto;gap:8px 16px;align-items:center;padding:10px 0;border-top:1px solid var(--rule)}
+.prin .field{grid-column:1/-1}
+.refl{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.check input{margin-top:4px;accent-color:var(--accent)}
+.people{display:flex;flex-wrap:wrap;gap:8px}
+.person{display:flex;align-items:center;gap:6px;background:var(--paper-2);border-radius:999px;padding:3px 12px 3px 3px;font-size:13px}
+.person img{width:24px;height:24px;border-radius:50%}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.two>*{min-width:0}
+
+/* results */
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tile{border:1px solid var(--rule);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.tile .v{font-family:var(--serif);font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.tile .v small{font-size:20px;color:var(--ink-2)}
+.bars{display:flex;flex-direction:column;gap:2px}
+.bar{display:grid;grid-template-columns:minmax(160px,1.2fr) 2fr minmax(110px,auto);gap:14px;align-items:center;padding:7px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.bar>*{min-width:0}
+.track{position:relative;height:12px;background:var(--paper-2);border-radius:999px}
+.track i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--vc)}
+.track .goalmark{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);border-radius:2px}
+.bar .val{font-size:13px;color:var(--ink-2);text-align:right;font-variant-numeric:tabular-nums}
+.dots{display:flex;flex-direction:column}
+.drow{display:grid;grid-template-columns:minmax(150px,1fr) 2.2fr minmax(120px,auto);gap:14px;align-items:center;padding:10px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.drow>*{min-width:0}
+.dtrack{position:relative;height:26px}
+.dtrack::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--rule-2)}
+.dtrack .d{position:absolute;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--ink-2);border:2px solid var(--paper)}
+.dtrack .avg{position:absolute;top:2px;bottom:2px;width:3px;margin-left:-1.5px;background:var(--accent);border-radius:2px}
+.dtrack .prev{position:absolute;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;border:1.5px dashed var(--ink-2);background:transparent}
+.dtrack .tick{position:absolute;bottom:-14px;font-size:10.5px;color:var(--ink-2);transform:translateX(-50%);font-family:var(--mono)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--ink-2);align-items:center}
+.legend i{display:inline-block;vertical-align:middle;margin-right:5px}
+[data-tip]{cursor:default}
+.tipbox{position:fixed;z-index:50;background:var(--ink);color:var(--paper);font-size:12.5px;padding:5px 9px;border-radius:6px;pointer-events:none;max-width:240px}
+.stack{display:flex;height:12px;border-radius:999px;overflow:hidden;gap:2px;background:var(--paper)}
+.stack i{display:block;height:100%}
+.reading{display:flex;flex-direction:column;gap:12px}
+.reading ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;max-width:75ch}
+.reading li b{font-weight:600}
+.ai{border:1px solid var(--rule-2);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;background:var(--paper)}
+.ai-out{white-space:pre-wrap;font-size:14.5px;max-width:78ch}
+.ai-out h5{font-family:var(--serif);font-weight:400;font-size:20px;margin:14px 0 4px}
+.tablewrap{overflow-x:auto}
+table.data{border-collapse:collapse;width:100%;font-size:13px;min-width:640px}
+table.data th,table.data td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.data th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:400}
+details summary{cursor:pointer;color:var(--accent-ink);font-size:14px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+@media (max-width:820px){
+  .ns-grid,.two{grid-template-columns:1fr}
+  .ventures{grid-template-columns:1fr}
+  .tiles{grid-template-columns:1fr 1fr}
+  .crow{grid-template-columns:1fr}
+  .crow .inputs{grid-template-columns:1fr 1fr}
+  .dim{grid-template-columns:1fr}
+  .bar,.drow{grid-template-columns:1fr;gap:6px}
+  .bar .val{text-align:left}
+  .journey{grid-template-columns:1fr 1fr;row-gap:30px}
+  .journey::before{display:none}
+  .books{grid-template-columns:1fr}
+  .editgrid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <div class="kicker">Soft Queer Wealth · The Mahogany Pages · Softer Strategies</div>
+      <h1>Building Things That Matter</h1>
+    </div>
+    <div class="mast-right">
+      <div class="qsel"><label for="quarter">Quarter</label><select id="quarter" aria-label="Quarter"><option>Q4 2026</option></select></div>
+      <div class="who" id="who"></div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" id="t-north" data-tab="north" aria-selected="true"><span class="n">01</span>North Star</button>
+    <button class="tab" role="tab" id="t-goals" data-tab="goals" aria-selected="false"><span class="n">02</span>Goals</button>
+    <button class="tab" role="tab" id="t-checkin" data-tab="checkin" aria-selected="false"><span class="n">03</span>Check-in</button>
+    <button class="tab" role="tab" id="t-pulse" data-tab="pulse" aria-selected="false"><span class="n">04</span>Pulse</button>
+    <button class="tab" role="tab" id="t-results" data-tab="results" aria-selected="false"><span class="n">05</span>Results</button>
+  </nav>
+
+  <main class="sheet">
+    <!-- 01 NORTH STAR -->
+    <section class="panel" id="p-north" role="tabpanel" aria-labelledby="t-north">
+      <div class="ns-grid">
+        <div class="why panel" style="gap:22px">
+          <div class="intro">
+            <span class="label">Why I build</span>
+            <p>I've spent more than a decade at the intersection of public health, epidemiology, data science and healthcare AI. Again and again, I watched meaningful work stall in bureaucracy, funding limits and long implementation cycles. Products reached the research or patent stage and never reached the people they were designed for.</p>
+            <p class="pull">I'm not walking away from healthcare or technology. I'm bringing my skills closer to the people who benefit from them.</p>
+          </div>
+          <div class="journey" aria-label="Path to founding">
+            <div><b>Community health</b>Public health work in Uganda</div>
+            <div><b>Outbreak response</b>Infectious disease response</div>
+            <div><b>Healthcare AI</b>AI products at Mayo Clinic</div>
+            <div><b>Founder</b>Three ventures, one ecosystem</div>
+          </div>
+          <div class="intro">
+            <span class="label">Lifting as I climb</span>
+            <p class="small">I've benefited from education, resources and relationships that aren't equally available. This isn't about rescuing anyone. It's about using what I've been given to widen what's possible for others. My work is an extension of my activism.</p>
+          </div>
+        </div>
+        <div class="panel" style="gap:22px">
+          <div class="star">
+            <span class="label">My north star</span>
+            <p class="big">Build things that make a difference people can actually feel.</p>
+            <p class="small muted">Success isn't revenue, followers or launches. It's whether people have more access, agency and opportunity because of what we built.</p>
+          </div>
+          <div class="intro" style="gap:14px">
+            <span class="label">Guiding principles</span>
+            <ol class="principles" id="principleList"></ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="gap:18px">
+        <div class="intro"><span class="label">The ecosystem</span><h2>Three ventures. One ecosystem. Collective impact.</h2></div>
+        <div class="ventures">
+          <div class="venture v-SQW"><span class="label">Media · storytelling</span><h3>Soft Queer Wealth</h3><span class="role">media creates visibility</span><p class="small muted">Black queer media and community: storytelling, relationship diversity, education and visibility.</p></div>
+          <div class="venture v-TMPs"><span class="label">Technology · discovery</span><h3>The Mahogany Pages</h3><span class="role">technology creates access</span><p class="small muted">A discovery platform for Black queer and sapphic events, businesses, experiences and resources.</p></div>
+          <div class="venture v-SS"><span class="label">Consulting · services</span><h3>Softer Strategies</h3><span class="role">consulting creates opportunity</span><p class="small muted">Digital strategy and brand management for entrepreneurs, professionals and businesses.</p></div>
+        </div>
+        <ul class="flows">
+          <li><span class="dir v-SQW" style="color:var(--sqw)">SQW → TMPs</span>Audience distribution, media visibility, cultural relevance, community trust</li>
+          <li><span class="dir" style="color:var(--tmp)">TMPs → SQW</span>Community resources, experiences, event intelligence, stories and partnerships</li>
+          <li><span class="dir" style="color:var(--tmp)">TMPs → Softer Strategies</span>Discovery and digital concierge technology that may be licensed for clients</li>
+          <li><span class="dir" style="color:var(--ss)">Softer Strategies → TMPs</span>Contracted product management, technical coordination, brand strategy and development</li>
+          <li><span class="dir" style="color:var(--ss)">Softer Strategies → SQW</span>Consulting, brand strategy, production and contractor management</li>
+          <li><span class="dir" style="color:var(--sqw)">SQW → Softer Strategies</span>Visibility, relationships and aligned commercial collaborations</li>
+        </ul>
+        <div class="intro" style="gap:10px;max-width:none">
+          <span class="label">The flywheel</span>
+          <ol class="cycle">
+            <li>Storytelling + audience</li><li>Community discovery</li><li>Technology + partnerships</li><li>Commercial services</li><li>Sustainable revenue + reinvestment</li><li>Stronger community infrastructure</li>
+          </ol>
+        </div>
+        <div class="books">
+          <h3>Connected missions.<br>Separate books.</h3>
+          <ul>
+            <li>Each venture keeps its own finances, accounting and legal obligations. No pooled money.</li>
+            <li>Value moves only through documented service contracts, technology licensing, fair compensation or lawful investment.</li>
+            <li>Related-party transactions get legal and tax review first.</li>
+            <li>TMPs as a nonprofit is being explored, not established. If it happens, charitable assets serve charitable purposes, with independent oversight and conflict-of-interest safeguards.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="question">“Are we building businesses that give us the freedom to do more of the work we love, with the people we care about, for communities we believe in?”</p>
+    </section>
+
+    <!-- 02 GOALS -->
+    <section class="panel" id="p-goals" role="tabpanel" aria-labelledby="t-goals" hidden>
+      <div class="intro">
+        <span class="label">The plan</span>
+        <h2>What we said we'd do</h2>
+        <p class="muted">Every goal carries its status: <span class="chip st-current">Current</span> confirmed today, <span class="chip st-historical">Historical</span> a past figure, <span class="chip st-proposed">Proposed</span> a target, <span class="chip st-aspirational">Aspirational</span> a longer-term hope, <span class="chip st-establish">To establish</span> no baseline yet.</p>
+      </div>
+      <div class="btnrow" style="justify-content:space-between">
+        <div class="filters" id="goalFilters"></div>
+        <button class="btn ghost" id="addGoal" hidden>Add a goal</button>
+      </div>
+      <div id="goalsBody" class="panel" style="gap:28px"></div>
+    </section>
+
+    <!-- 03 CHECK-IN -->
+    <section class="panel" id="p-checkin" role="tabpanel" aria-labelledby="t-checkin" hidden>
+      <div class="intro">
+        <span class="label" id="ciKicker">Q4 2026 check-in</span>
+        <h2>Record what actually happened</h2>
+        <p class="muted">Enter results as they're measured. Leave a field blank rather than guess. Everything saves as you go and the whole team sees it live.</p>
+      </div>
+      <div class="meter" id="ciMeter"></div>
+      <div class="filters" id="ciFilters"></div>
+      <div id="ciBody" class="panel" style="gap:12px"></div>
+    </section>
+
+    <!-- 04 PULSE -->
+    <section class="panel" id="p-pulse" role="tabpanel" aria-labelledby="t-pulse" hidden>
+      <div class="intro">
+        <span class="label" id="puKicker">Q4 2026 pulse</span>
+        <h2>How is this feeling?</h2>
+        <p class="muted">Each person fills in their own pulse. Your scores and principle ratings are visible to the team. Your written reflections stay private unless you choose to share them.</p>
+      </div>
+      <div id="pulseBody" class="panel" style="gap:30px"></div>
+    </section>
+
+    <!-- 05 RESULTS -->
+    <section class="panel" id="p-results" role="tabpanel" aria-labelledby="t-results" hidden>
+      <div class="intro">
+        <span class="label" id="reKicker">Q4 2026 results</span>
+        <h2>Where we are, and what it could mean</h2>
+      </div>
+      <div id="resultsBody" class="panel" style="gap:36px"></div>
+    </section>
+  </main>
+</div>
+<div class="tipbox" id="tip" hidden></div>
+
+<script>
+(() => {
+"use strict";
+// ---------- static content ----------
+const PRINCIPLES = [
+  ["access","Access over exclusivity","Create pathways for people too often overlooked or underserved."],
+  ["impact","Impact over optics","Measure whether our work creates real outcomes, not simply visibility."],
+  ["community","Community over extraction","Build with communities, compensate labor fairly, preserve trust."],
+  ["sustain","Sustainability over burnout","Systems that support both the mission and the people doing the work."],
+  ["freedom","Freedom with purpose","Use financial success to create autonomy and capacity for meaningful work."],
+];
+const DIMS = [
+  ["purpose","Purpose alignment","A 10: I'd choose this work again."],
+  ["impact","Community impact","A 10: people have more access, agency and opportunity because of what we built."],
+  ["learning","Creative fulfillment + learning","A 10: I'm learning from the people I work with."],
+  ["freedom","Freedom, flexibility + travel","A 10: I decide where, when and with whom I work."],
+  ["finance","Financial sustainability","A 10: labor is paid fairly and our households are supported."],
+  ["energy","Energy, well-being + balance","A 10: none of the exhaustion I left behind."],
+];
+const PROMPTS = [
+  "What work gave me the most energy?","What work drained me?","What meaningful community outcomes did we create?",
+  "What did I learn from the people I worked with?","Did I experience anything new or interesting?",
+  "Are the businesses becoming more financially sustainable?","Are we compensating labor fairly?",
+  "What should we stop, start, or continue?","What would make next quarter more fulfilling?",
+];
+const VENTURES = [["SQW","Soft Queer Wealth"],["TMPs","The Mahogany Pages"],["SS","Softer Strategies"]];
+const VNAME = Object.fromEntries(VENTURES);
+const STATUS = {current:"Current",historical:"Historical",proposed:"Proposed",aspirational:"Aspirational",establish:"To establish"};
+const PROGRESS = ["Not started","On track","At risk","Achieved","Missed","Paused"];
+const PRIN_OPTS = [["living","Living it"],["partly","Partly"],["notyet","Not yet"]];
+
+// ---------- helpers ----------
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const h = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const isNum = v => typeof v === "number" && isFinite(v);
+const fmt = (n, unit) => isNum(n) ? (Math.abs(n) >= 1000 ? n.toLocaleString("en-US") : String(Math.round(n*100)/100)) + (unit ? unit : "") : "—";
+const pct = x => Math.round(x*100) + "%";
+const progClass = p => "prog p-" + String(p||"None").replace(/\s+/g,"");
+const qLabel = id => { const m = /^(\d{4})-Q(\d)$/.exec(id||""); return m ? `Q${m[2]} ${m[1]}` : id; };
+const nextQ = id => { const m = /^(\d{4})-Q(\d)$/.exec(id); let y=+m[1], q=+m[2]+1; if (q>4){q=1;y++} return `${y}-Q${q}`; };
+const prevQ = id => { const m = /^(\d{4})-Q(\d)$/.exec(id); let y=+m[1], q=+m[2]-1; if (q<1){q=4;y--} return `${y}-Q${q}`; };
+const when = iso => { try { return new Date(iso).toLocaleDateString(undefined,{month:"short",day:"numeric"}); } catch { return ""; } };
+const store = { get(k){ try { return localStorage.getItem(k); } catch { return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch {} } };
+
+// ---------- state ----------
+const S = {
+  db:null, user:null, uid:null, canWrite:null, isAdmin:false, readOnly:false, dbReady:false,
+  plan:null, quarters:{list:["2026-Q4"], current:"2026-Q4"}, q:"2026-Q4",
+  checkin:{}, pulses:{}, mine:null, myPrivate:{},
+  tab:"north", goalFilter:"all", ciFilter:"all", profiles:{}
+};
+
+// ---------- tabs ----------
+function setTab(t){
+  S.tab = t;
+  $$(".tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab===t)));
+  $$("[role=tabpanel]").forEach(p => p.hidden = p.id !== "p-"+t);
+  store.set("bttm.tab", t);
+  try { if (/^[a-z]+$/.test(t)) history.replaceState(null, "", "#"+t); } catch {}
+  renderTab();
+}
+$$(".tab").forEach(b => b.addEventListener("click", () => setTab(b.dataset.tab)));
+$(".tabs").addEventListener("keydown", e => {
+  if (!["ArrowRight","ArrowLeft"].includes(e.key)) return;
+  const tabs = $$(".tab"); const i = tabs.findIndex(b => b.dataset.tab===S.tab);
+  const n = tabs[(i + (e.key==="ArrowRight"?1:-1) + tabs.length) % tabs.length]; n.focus(); setTab(n.dataset.tab);
+});
+
+// principles (static)
+$("#principleList").innerHTML = PRINCIPLES.map(([,t,d],i) => `<li><span class="num">${i+1}</span><div><strong>${h(t)}</strong><span class="small muted">${h(d)}</span></div></li>`).join("");
+
+// tooltip
+const tip = $("#tip");
+document.addEventListener("pointerover", e => { const el = e.target.closest("[data-tip]"); if (!el) return; tip.textContent = el.dataset.tip; tip.hidden = false; });
+document.addEventListener("pointermove", e => { if (tip.hidden) return; const x = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8); tip.style.left = x+"px"; tip.style.top = (e.clientY + 14)+"px"; });
+document.addEventListener("pointerout", e => { if (e.target.closest("[data-tip]")) tip.hidden = true; });
+
+// ---------- quarter ----------
+const qSel = $("#quarter");
+function renderQuarterSelect(){
+  const list = [...new Set([...(S.quarters.list||[]), S.q])].sort();
+  qSel.innerHTML = list.map(id => `<option value="${h(id)}"${id===S.q?" selected":""}>${h(qLabel(id))}</option>`).join("");
+  $("#ciKicker").textContent = qLabel(S.q) + " check-in";
+  $("#puKicker").textContent = qLabel(S.q) + " pulse";
+  $("#reKicker").textContent = qLabel(S.q) + " results";
+}
+qSel.addEventListener("change", () => { S.q = qSel.value; subscribeQuarter(); renderQuarterSelect(); renderTab(true); });
+
+// ---------- rendering dispatcher ----------
+let ciBuiltFor = "", puBuiltFor = "";
+function renderTab(force){
+  if (S.tab==="goals") renderGoals();
+  if (S.tab==="checkin") renderCheckin(force);
+  if (S.tab==="pulse") renderPulse(force);
+  if (S.tab==="results") renderResults();
+}
+function waiting(msg){ return `<div class="notice">${h(msg)}</div>`; }
+function noStoreMsg(){
+  if (S.dbReady && !S.db) return "This view can't reach the team's shared data. Open it from claude.ai while signed in to see and record check-ins.";
+  return "Loading the team's goals and check-ins…";
+}
+
+// ---------- GOALS ----------
+let editing = null; // metric id or "new"
+function filterBar(el, current, onPick){
+  el.innerHTML = [["all","All ventures"],...VENTURES.map(([k,n])=>[k,n])].map(([k,n]) =>
+    `<button class="fbtn" data-k="${k}" aria-pressed="${k===current}">${h(n)}</button>`).join("");
+  el.onclick = e => { const b = e.target.closest(".fbtn"); if (b) onPick(b.dataset.k); };
+}
+function goalCard(m){
+  if (editing === m.id) return editForm(m);
+  const tgt = isNum(m.targetNum) ? `<span class="to">${h(fmt(m.targetNum, m.unit))}</span>` : `<span class="to text">${h(m.target||"—")}</span>`;
+  return `<article class="goal" id="goal-${h(m.id)}">
+    <div class="goal-top"><div><div class="area">${h(m.area||"")}</div><h4>${h(m.name)}</h4></div><span class="chip st-${h(m.status)}">${h(STATUS[m.status]||m.status)}</span></div>
+    <div class="fig">${tgt}<span class="from">${m.baseline ? "from " + h(m.baseline) : ""}</span></div>
+    ${isNum(m.targetNum) && m.target ? `<p class="small muted">${h(m.target)}</p>`:""}
+    <p class="why">${h(m.why||"")}</p>
+    <dl>${m.aspiration?`<dt>Longer term</dt><dd>${h(m.aspiration)}</dd>`:""}${m.measure?`<dt>Measured by</dt><dd>${h(m.measure)}</dd>`:""}</dl>
+    ${S.isAdmin ? `<button class="linkbtn" data-edit="${h(m.id)}">Edit goal</button>` : ""}
+  </article>`;
+}
+function editForm(m){
+  const f = (k,l,type="text",wide=false) => `<label class="field${wide?" wide":""}"><span>${l}</span><input id="ed-${k}" type="${type}" ${type==="number"?'step="any"':""} value="${h(m[k] ?? "")}"></label>`;
+  return `<article class="goal" id="goal-edit">
+    <div class="editgrid">
+      ${f("name","Goal",undefined,true)}
+      <label class="field"><span>Venture</span><select id="ed-venture">${VENTURES.map(([k,n])=>`<option value="${k}"${m.venture===k?" selected":""}>${h(n)}</option>`).join("")}</select></label>
+      <label class="field"><span>Status</span><select id="ed-status">${Object.entries(STATUS).map(([k,n])=>`<option value="${k}"${m.status===k?" selected":""}>${n}</option>`).join("")}</select></label>
+      ${f("area","Area")}${f("unit","Unit suffix (e.g. %, /10)")}
+      ${f("baseline","Baseline (as written)")}${f("baselineNum","Baseline number","number")}
+      ${f("target","Target (as written)")}${f("targetNum","Target number","number")}
+      ${f("aspiration","Longer-term aspiration",undefined,true)}
+      <label class="field wide"><span>Why it matters</span><textarea id="ed-why" rows="2">${h(m.why||"")}</textarea></label>
+      ${f("measure","How it's measured",undefined,true)}
+    </div>
+    <p class="hint">Fill in the numbers when a goal can be counted. That lets Results show progress automatically. Leave them blank for milestone goals.</p>
+    <div class="btnrow"><button class="btn" data-save="${h(m.id)}">Save goal</button><button class="btn ghost" data-cancel>Cancel</button>
+    ${m.id!=="new" ? `<button class="btn danger" data-del="${h(m.id)}">Remove</button>`:""}<span class="saved" id="edMsg"></span></div>
+  </article>`;
+}
+function renderGoals(){
+  const body = $("#goalsBody");
+  $("#addGoal").hidden = !S.isAdmin || !S.plan;
+  filterBar($("#goalFilters"), S.goalFilter, k => { S.goalFilter = k; renderGoals(); });
+  if (!S.plan) { body.innerHTML = waiting(noStoreMsg()); return; }
+  const items = S.plan.items || [];
+  if (!items.length && editing!=="new") { body.innerHTML = waiting("No goals yet. An editor can add the first one with “Add a goal”."); return; }
+  let html = "";
+  if (editing === "new") html += `<div class="goals">${editForm({id:"new", venture: S.goalFilter!=="all"?S.goalFilter:"SQW", status:"proposed"})}</div>`;
+  for (const [k,n] of VENTURES){
+    if (S.goalFilter!=="all" && S.goalFilter!==k) continue;
+    const vs = items.filter(m => m.venture===k); if (!vs.length) continue;
+    html += `<section class="vgroup v-${k}"><div class="vhead"><h3>${h(n)}</h3><span class="small muted">${vs.length} goals</span><span class="vtag">${k}</span></div><div class="goals">${vs.map(goalCard).join("")}</div></section>`;
+  }
+  body.innerHTML = html;
+}
+$("#addGoal").addEventListener("click", () => { editing = "new"; renderGoals(); $("#ed-name")?.focus(); });
+$("#goalsBody").addEventListener("click", async e => {
+  const ed = e.target.closest("[data-edit]"), cancel = e.target.closest("[data-cancel]"), save = e.target.closest("[data-save]"), del = e.target.closest("[data-del]");
+  if (ed){ editing = ed.dataset.edit; renderGoals(); $("#ed-name")?.focus(); return; }
+  if (cancel){ editing = null; renderGoals(); return; }
+  if (del){
+    if (del.dataset.confirm !== "1"){ del.dataset.confirm = "1"; del.textContent = "Remove for good?"; return; }
+    await savePlan((S.plan.items||[]).filter(m => m.id !== del.dataset.del)); editing = null; renderGoals(); return;
+  }
+  if (save){
+    const v = k => $("#ed-"+k)?.value.trim() ?? "";
+    const n = k => { const x = v(k); return x === "" ? null : Number(x); };
+    if (!v("name")) { $("#edMsg").textContent = "Give the goal a name."; $("#edMsg").className = "saved err"; return; }
+    const items = [...(S.plan.items||[])];
+    let id = save.dataset.save;
+    const venture = v("venture");
+    if (id === "new"){ const nums = items.filter(m=>m.venture===venture).map(m=>+String(m.id).split("-")[1]||0); id = `${venture}-${String(Math.max(0,...nums)+1).padStart(2,"0")}`; }
+    const prev = items.find(m=>m.id===id) || {};
+    const m = {...prev, id, venture, status:v("status"), name:v("name"), area:v("area"), unit:v("unit"), baseline:v("baseline"), baselineNum:n("baselineNum"),
+      target:v("target"), targetNum:n("targetNum"), aspiration:v("aspiration"), why:v("why"), measure:v("measure")};
+    const i = items.findIndex(x=>x.id===id); if (i>=0) items[i] = m; else items.push(m);
+    const ok = await savePlan(items);
+    if (ok){ editing = null; renderGoals(); }
+  }
+});
+async function savePlan(items){
+  try { await S.db.doc("plan/metrics").set({items, updatedBy:S.uid, updatedAt:new Date().toISOString()}); return true; }
+  catch(e){ const m = $("#edMsg"); if (m){ m.textContent = "Couldn't save. Only editors can change goals."; m.className="saved err"; } return false; }
+}
+
+// ---------- CHECK-IN ----------
+const pending = {}; const timers = {}; let writeChain = Promise.resolve();
+function entryFor(id){ return (S.checkin.entries||{})[id] || {}; }
+function renderCheckinMeter(){
+  const items = S.plan?.items || []; const n = items.filter(m => isRecorded(entryFor(m.id))).length;
+  $("#ciMeter").innerHTML = items.length ? `<div class="btnrow" style="justify-content:space-between"><span class="small"><b>${n}</b> of ${items.length} goals have a result recorded</span><span class="small muted">${S.readOnly?"You can view this check-in. Editing needs Contributor access or higher.":""}</span></div><div class="meterbar" role="progressbar" aria-valuemin="0" aria-valuemax="${items.length}" aria-valuenow="${n}"><i style="width:${items.length?n/items.length*100:0}%"></i></div>` : "";
+}
+function isRecorded(e){ return isNum(e.actual) || (e.actualText && e.actualText.trim()) || (e.progress && e.progress!=="Not started"); }
+function renderCheckin(force){
+  const body = $("#ciBody");
+  filterBar($("#ciFilters"), S.ciFilter, k => { S.ciFilter = k; renderCheckin(true); });
+  if (!S.plan){ body.innerHTML = waiting(noStoreMsg()); $("#ciMeter").innerHTML=""; return; }
+  renderCheckinMeter();
+  const key = S.q + "|" + S.ciFilter + "|" + JSON.stringify((S.plan.items||[]).map(m=>[m.id,m.targetNum,m.target,m.name])) + "|" + S.readOnly;
+  if (!force && ciBuiltFor === key){ syncCheckin(); return; }
+  ciBuiltFor = key;
+  const dis = S.readOnly ? " disabled" : "";
+  body.innerHTML = (S.plan.items||[]).filter(m => S.ciFilter==="all" || m.venture===S.ciFilter).map(m => {
+    const numeric = isNum(m.targetNum);
+    return `<div class="crow v-${h(m.venture)}" data-id="${h(m.id)}">
+      <div class="meta"><span class="vtag">${h(m.venture)}</span><h4>${h(m.name)}</h4>
+        <span class="tgt">Target: ${numeric ? h(fmt(m.targetNum,m.unit)) : h(m.target||"—")}${m.baseline?` · Baseline: ${h(m.baseline)}`:""}</span>
+        <span class="saved" data-saved></span></div>
+      <div class="inputs">
+        ${numeric
+          ? `<label class="field"><span>Actual${m.unit?" ("+h(m.unit.trim())+")":""}</span><input type="number" step="any" inputmode="decimal" id="a-${h(m.id)}" data-f="actual" placeholder="Not measured"${dis}></label>`
+          : `<label class="field"><span>Result</span><input type="text" id="a-${h(m.id)}" data-f="actualText" placeholder="What happened?"${dis}></label>`}
+        <label class="field"><span>Progress</span><select id="p-${h(m.id)}" data-f="progress"${dis}><option value="">—</option>${PROGRESS.map(p=>`<option>${p}</option>`).join("")}</select></label>
+        <label class="field"><span>Owner</span><input type="text" id="o-${h(m.id)}" data-f="owner" placeholder="Who owns it"${dis}></label>
+        <label class="field wide"><span>Notes + source</span><textarea rows="1" id="n-${h(m.id)}" data-f="note" placeholder="Where the number came from, what you noticed"${dis}></textarea></label>
+      </div></div>`;
+  }).join("");
+  syncCheckin(true);
+}
+function syncCheckin(all){
+  for (const row of $$("#ciBody .crow")){
+    const id = row.dataset.id, e = entryFor(id);
+    for (const el of $$("[data-f]", row)){
+      if (document.activeElement === el && !all) continue;
+      if (pending[id] && pending[id][el.dataset.f] !== undefined) continue;
+      const v = e[el.dataset.f]; const s = v == null ? "" : String(v);
+      if (el.value !== s) el.value = s;
+    }
+    const sv = $("[data-saved]", row);
+    if (!sv.classList.contains("err") && !pending[id]) sv.textContent = e.at ? `Updated ${when(e.at)}${e.by ? " by " + nameOf(e.by) : ""}` : "";
+  }
+  renderCheckinMeter();
+}
+$("#ciBody").addEventListener("input", e => {
+  const el = e.target.closest("[data-f]"); if (!el || S.readOnly) return;
+  const row = el.closest(".crow"), id = row.dataset.id;
+  let val = el.value;
+  if (el.dataset.f === "actual") val = val === "" ? null : Number(val);
+  (pending[id] ||= {})[el.dataset.f] = val;
+  const sv = $("[data-saved]", row); sv.className = "saved"; sv.textContent = "Saving…";
+  clearTimeout(timers[id]); timers[id] = setTimeout(() => flush(id, row), el.tagName==="SELECT" ? 0 : 700);
+});
+function flush(id, row){
+  const patch = pending[id]; if (!patch) return; delete pending[id];
+  const m = (S.plan.items||[]).find(x=>x.id===id) || {};
+  const entry = {...patch, target: m.target ?? null, targetNum: isNum(m.targetNum) ? m.targetNum : null, by:S.uid, at:new Date().toISOString()};
+  const ref = S.db.doc("checkins/" + S.q);
+  writeChain = writeChain.then(async () => {
+    const snap = await ref.get();
+    if (snap.exists) await ref.update({entries:{[id]:entry}});
+    else await ref.set({quarter:S.q, createdAt:new Date().toISOString(), entries:{[id]:entry}});
+  }).then(() => { const sv = $("[data-saved]", row); if (sv){ sv.className="saved"; sv.textContent = "Saved"; } },
+    err => { const sv = $("[data-saved]", row); if (sv){ sv.className="saved err"; sv.textContent = err?.code==="invalid_argument" ? "Not saved: your access is view-only." : "Not saved. Check your connection and try again."; }
+      if (err?.code==="invalid_argument"){ S.readOnly = true; renderCheckin(true); } });
+}
+
+// ---------- PULSE ----------
+function myPulse(){ return ((S.pulses[S.uid]||{}).quarters||{})[S.q] || null; }
+function renderPulse(force){
+  const body = $("#pulseBody");
+  if (!S.dbReady || !S.db){ body.innerHTML = waiting(noStoreMsg()); return; }
+  if (!S.uid){ body.innerHTML = waiting(S.local ? "Type your name in “Checking in as” at the top of the page to record your pulse." : "Sign in to claude.ai to record your own pulse."); return; }
+  if (force || puBuiltFor !== S.q){ puBuiltFor = S.q; buildPulseForm(); }
+  renderTeamPulse();
+}
+function buildPulseForm(){
+  const mine = myPulse() || {}, priv = (S.myPrivate||{})[S.q] || {};
+  const answers = priv.answers || mine.reflections || [];
+  const share = priv.share ?? !!(mine.reflections && mine.reflections.length);
+  $("#pulseBody").innerHTML = `
+    <div>
+      <div class="btnrow" style="justify-content:space-between;margin-bottom:6px"><span class="label">Your scores · 1 to 10</span><span class="small muted" id="puWhen">${mine.at?`Last saved ${when(mine.at)}`:""}</span></div>
+      ${DIMS.map(([k,t,d]) => `<div class="dim"><div><h4>${h(t)}</h4><span class="small muted">${h(d)}</span></div>
+        <div class="scale" role="radiogroup" aria-label="${h(t)}">${Array.from({length:10},(_,i)=>i+1).map(n=>`<label><input type="radio" name="dim-${k}" value="${n}"${(mine.scores||{})[k]===n?" checked":""} aria-label="${n}"><span>${n}</span></label>`).join("")}</div></div>`).join("")}
+    </div>
+    <div>
+      <span class="label">Principles check · are we living them?</span>
+      ${PRINCIPLES.map(([k,t]) => `<div class="prin"><strong class="serif-i" style="font-size:19px;font-weight:400">${h(t)}</strong>
+        <div class="seg" role="radiogroup" aria-label="${h(t)}">${PRIN_OPTS.map(([v,l])=>`<label><input type="radio" name="pr-${k}" value="${v}"${(mine.principles||{})[k]===v?" checked":""}><span>${l}</span></label>`).join("")}</div>
+        <label class="field"><span>Evidence (optional)</span><input type="text" id="prn-${k}" value="${h((mine.principleNotes||{})[k]||"")}" placeholder="What makes you say that?"></label></div>`).join("")}
+    </div>
+    <div class="panel" style="gap:14px">
+      <span class="label">Quarterly reflection</span>
+      <div class="refl">${PROMPTS.map((p,i)=>`<label class="field"><span>${String(i+1).padStart(2,"0")}</span><b style="font-weight:600;font-size:14.5px">${h(p)}</b><textarea id="rf-${i}" rows="3">${h(answers[i]||"")}</textarea></label>`).join("")}</div>
+      <label class="check"><input type="checkbox" id="shareRefl"${share?" checked":""}><span>Share my written reflections with the team. Left unticked, only you can read them; they still feed nobody's results.</span></label>
+    </div>
+    <div class="btnrow"><button class="btn" id="savePulse">Save my pulse</button><span class="saved" id="puMsg"></span></div>
+    <div class="panel" style="gap:12px" id="teamPulse"></div>`;
+  $("#savePulse").onclick = savePulse;
+}
+async function savePulse(){
+  const btn = $("#savePulse"), msg = $("#puMsg"); btn.disabled = true; msg.className = "saved"; msg.textContent = "Saving…";
+  const scores = {}, principles = {}, principleNotes = {};
+  for (const [k] of DIMS){ const c = $(`input[name="dim-${k}"]:checked`); if (c) scores[k] = +c.value; }
+  for (const [k] of PRINCIPLES){ const c = $(`input[name="pr-${k}"]:checked`); if (c) principles[k] = c.value; const n = $("#prn-"+k).value.trim(); if (n) principleNotes[k] = n; }
+  const answers = PROMPTS.map((_,i) => $("#rf-"+i).value.trim());
+  const share = $("#shareRefl").checked;
+  const at = new Date().toISOString();
+  const entry = {scores, principles, principleNotes, reflections: share ? answers : [], at};
+  try {
+    const ref = S.db.doc("pulse/" + S.uid); const snap = await ref.get();
+    if (snap.exists) await ref.update({quarters:{[S.q]:entry}}); else await ref.set({quarters:{[S.q]:entry}});
+    const pref = S.db.doc("data/users/" + S.uid + "/reflections"); const ps = await pref.get();
+    if (ps.exists) await pref.update({[S.q]:{answers, share, at}}); else await pref.set({[S.q]:{answers, share, at}});
+    msg.textContent = "Saved. Thank you."; $("#puWhen").textContent = `Last saved ${when(at)}`;
+  } catch(e){ msg.className = "saved err"; msg.textContent = e?.code==="invalid_argument" ? "Not saved: your access is view-only. Ask the owner for Contributor access." : "Not saved. Check your connection and try again."; }
+  btn.disabled = false;
+}
+function quarterPulses(q){ return Object.entries(S.pulses).map(([uid,d]) => [uid, ((d||{}).quarters||{})[q]]).filter(([,p]) => p && p.scores && Object.keys(p.scores).length); }
+function renderTeamPulse(){
+  const el = $("#teamPulse"); if (!el) return;
+  const ps = quarterPulses(S.q);
+  el.innerHTML = `<span class="label">Who's checked in for ${h(qLabel(S.q))}</span>` + (ps.length
+    ? `<div class="people">${ps.map(([uid]) => personChip(uid)).join("")}</div><p class="small muted">See the combined picture on Results.</p>`
+    : `<p class="small muted">Nobody yet. Your pulse will be the first.</p>`);
+  resolveNames(ps.map(([u])=>u));
+}
+function personChip(uid){ const p = S.profiles[uid]; return `<span class="person" data-uid="${h(uid)}"><img alt="" src="${h(p?.avatarUrl||"")}"${p?.avatarUrl?"":" hidden"}><span>${h(p?.name || (uid===S.uid?"You":"Teammate"))}</span></span>`; }
+function nameOf(uid){ if (uid === S.uid) return "you"; return S.profiles[uid]?.name || "a teammate"; }
+let nameReq = 0;
+async function resolveNames(ids){
+  if (!S.user || !ids.length) return;
+  const missing = ids.filter(id => !S.profiles[id]); if (!missing.length) return;
+  const r = ++nameReq; const res = await S.user.profiles(ids);
+  Object.assign(S.profiles, res);
+  if (r === nameReq){ renderTab(); }
+}
+
+// ---------- ANALYSIS ----------
+function analyze(q){
+  const items = S.plan?.items || [];
+  const entries = (q===S.q ? S.checkin.entries : {}) || {};
+  const rows = items.map(m => {
+    const e = entries[m.id] || {};
+    const target = isNum(e.targetNum) ? e.targetNum : (isNum(m.targetNum) ? m.targetNum : null);
+    const base = isNum(m.baselineNum) ? m.baselineNum : null;
+    let score = null, basis = null;
+    if (isNum(e.actual) && isNum(target)){
+      if (m.direction === "down"){ score = isNum(base) && base!==target ? (base - e.actual)/(base - target) : (e.actual ? target/e.actual : null); basis = "down"; }
+      else if (isNum(base) && base < target){ score = (e.actual - base)/(target - base); basis = "gap"; }
+      else if (target){ score = e.actual/target; basis = "target"; }
+    }
+    let progress = e.progress || "";
+    const auto = score==null ? "" : score >= 1 ? "Achieved" : score >= .75 ? "On track" : score >= .4 ? "At risk" : "Behind";
+    return {m, e, target, base, score, basis, progress: progress || auto, auto, recorded: isRecorded(e)};
+  });
+  return rows;
+}
+function pulseStats(q){
+  const ps = quarterPulses(q);
+  const dims = DIMS.map(([k,t]) => { const vals = ps.map(([,p]) => p.scores[k]).filter(isNum);
+    const avg = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null;
+    return {k, t, vals, avg, min: vals.length?Math.min(...vals):null, max: vals.length?Math.max(...vals):null}; });
+  const prin = PRINCIPLES.map(([k,t]) => { const c = {living:0, partly:0, notyet:0}; ps.forEach(([,p]) => { const v = (p.principles||{})[k]; if (c[v]!=null) c[v]++; });
+    const notes = ps.map(([,p]) => (p.principleNotes||{})[k]).filter(Boolean); return {k, t, c, n:c.living+c.partly+c.notyet, notes}; });
+  const all = dims.flatMap(d => d.vals); const overall = all.length ? all.reduce((a,b)=>a+b,0)/all.length : null;
+  const shared = ps.map(([,p]) => p.reflections || []).filter(a => a.some(Boolean));
+  return {n: ps.length, dims, prin, overall, shared};
+}
+function list(names){ return names.length <= 2 ? names.join(" and ") : names.slice(0,-1).join(", ") + " and " + names.at(-1); }
+function interpret(rows, P, Pprev){
+  const out = []; const N = rows.length; const rec = rows.filter(r => r.recorded);
+  if (!N) return out;
+  // 1. coverage
+  if (rec.length === 0) out.push(["How much we know", `No results are recorded for ${qLabel(S.q)} yet, so there's nothing to read into. Start on the Check-in tab. A blank is better than a guess.`]);
+  else if (rec.length < N/2) out.push(["How much we know", `Only ${rec.length} of ${N} goals have a result. Treat everything below as a partial picture: the gaps may matter more than the numbers.`]);
+  else out.push(["How much we know", `${rec.length} of ${N} goals have a result, enough to see patterns. ${N-rec.length ? `${N-rec.length} still have none.` : "Every goal is accounted for."}`]);
+  // 2. wins and gaps
+  const won = rows.filter(r => r.progress === "Achieved").map(r => r.m.name);
+  if (won.length) out.push(["What's working", `${list(won)} ${won.length>1?"reached their targets":"reached its target"}. Ask what made ${won.length>1?"these":"this"} work and whether it can be repeated without extra strain.`]);
+  const behind = rows.filter(r => ["Behind","Missed","At risk"].includes(r.progress));
+  if (behind.length) out.push(["What needs attention", `${list(behind.map(r=>r.m.name))} ${behind.length>1?"are":"is"} behind or at risk. Before adding effort, check whether the target was realistic, the timing was off, or something got in the way. Each of those leads to a different next step.`]);
+  // 3. venture balance
+  const vs = VENTURES.map(([k,n]) => { const rs = rows.filter(r => r.m.venture===k); const sc = rs.filter(r => isNum(r.score)).map(r => Math.min(r.score, 1.5));
+    return {k, n, total: rs.length, rec: rs.filter(r=>r.recorded).length, avg: sc.length ? sc.reduce((a,b)=>a+b,0)/sc.length : null}; });
+  const scored = vs.filter(v => v.avg != null);
+  if (scored.length >= 2){ const s = [...scored].sort((a,b)=>b.avg-a.avg);
+    if (s[0].avg - s.at(-1).avg >= .25) out.push(["Across the ventures", `${s[0].n} is furthest along on its counted goals (${pct(s[0].avg)} of the way on average) and ${s.at(-1).n} is furthest behind (${pct(s.at(-1).avg)}). If the ecosystem relies on ${s.at(-1).n}, that gap affects the others too.`]);
+    else out.push(["Across the ventures", `The three ventures are moving at a similar pace on their counted goals. No single business is holding the others back.`]); }
+  const quiet = vs.filter(v => v.total && v.rec === 0);
+  if (quiet.length && rec.length) out.push(["Missing measurements", `Nothing is recorded yet for ${list(quiet.map(v=>v.n))}. That could mean the work hasn't started, or that measuring it hasn't been anyone's job.`]);
+  const est = rows.filter(r => r.m.status === "establish" && !r.recorded);
+  if (est.length) out.push(["Baselines", `${est.length} goal${est.length>1?"s still need":" still needs"} a baseline (${list(est.slice(0,3).map(r=>r.m.name))}${est.length>3?" and others":""}). Until there's a starting point, progress on ${est.length>1?"them":"it"} can't be judged.`]);
+  // 4. pulse
+  if (P.n){
+    const d = P.dims.filter(x => x.avg != null); const lo = [...d].sort((a,b)=>a.avg-b.avg)[0], hi = [...d].sort((a,b)=>b.avg-a.avg)[0];
+    out.push(["How it feels", `${P.n} ${P.n>1?"people":"person"} scored the quarter. Highest: ${hi.t} (${hi.avg.toFixed(1)}). Lowest: ${lo.t} (${lo.avg.toFixed(1)}).${P.n<3?" With this few responses, read these as individual stories, not a team trend.":""}`]);
+    const split = d.filter(x => x.vals.length > 1 && x.max - x.min >= 4);
+    if (split.length) out.push(["Different experiences", `People scored ${list(split.map(x=>x.t))} very differently (a spread of 4 or more points). The average hides that. It's worth asking each person what's behind their number.`]);
+    if (Pprev && Pprev.n){ const ch = d.map(x => { const p = Pprev.dims.find(y=>y.k===x.k); return p && p.avg!=null ? {t:x.t, delta:x.avg-p.avg} : null; }).filter(Boolean).filter(c => Math.abs(c.delta) >= 1);
+      if (ch.length) out.push(["Since last quarter", ch.map(c => `${c.t} ${c.delta>0?"rose":"fell"} ${Math.abs(c.delta).toFixed(1)}`).join("; ") + "."]); }
+    // cross-reading numbers + feelings
+    const energy = d.find(x=>x.k==="energy"), fin = d.find(x=>x.k==="finance"), purpose = d.find(x=>x.k==="purpose");
+    const money = rows.filter(r => /revenue|partnership|monetization|earnings|client/i.test(r.m.name + " " + (r.m.area||"")));
+    const moneyBehind = money.filter(r => ["Behind","Missed","At risk"].includes(r.progress)).length;
+    if (energy && energy.avg != null && energy.avg <= 5 && won.length >= 2) out.push(["Numbers vs. feelings", `Several goals were met while energy scored ${energy.avg.toFixed(1)}. Hitting targets at the cost of the people doing the work cuts against “Sustainability over burnout”.`]);
+    if (fin && fin.avg != null && fin.avg <= 5 && moneyBehind) out.push(["Numbers vs. feelings", `Financial sustainability scored ${fin.avg.toFixed(1)}, and ${moneyBehind} revenue-related goal${moneyBehind>1?"s are":" is"} behind. The feeling matches the numbers, so this is probably real rather than a mood.`]);
+    if (purpose && purpose.avg != null && purpose.avg >= 8 && behind.length >= 3) out.push(["Numbers vs. feelings", `Purpose is strong (${purpose.avg.toFixed(1)}) even with several goals behind. The work still feels right; the question is capacity or scope, not direction.`]);
+    const notYet = P.prin.filter(p => p.n && p.c.notyet / p.n >= .5);
+    if (notYet.length) out.push(["Principles", `Half or more of the team say we're not yet living ${list(notYet.map(p=>"“"+p.t+"”"))}. That's an intention-versus-implementation gap to name out loud next quarter.`]);
+  } else out.push(["How it feels", "No one has saved a pulse for this quarter yet, so there's no read on energy, purpose or fulfillment to set beside the numbers."]);
+  return out;
+}
+
+// ---------- RESULTS ----------
+let aiCtl = null, aiDraft = "";
+function renderResults(){
+  const body = $("#resultsBody");
+  if (!S.plan){ body.innerHTML = waiting(noStoreMsg()); return; }
+  const rows = analyze(S.q), P = pulseStats(S.q), Pprev = pulseStats(prevQ(S.q));
+  const rec = rows.filter(r=>r.recorded).length, won = rows.filter(r=>r.progress==="Achieved").length;
+  const onTrack = rows.filter(r=>r.progress==="On track").length, risk = rows.filter(r=>["At risk","Behind","Missed"].includes(r.progress)).length;
+  let html = `<div class="tiles">
+    <div class="tile"><span class="label">Recorded</span><span class="v">${rec}<small> / ${rows.length}</small></span><span class="small muted">goals with a result</span></div>
+    <div class="tile"><span class="label">Achieved</span><span class="v">${won}</span><span class="small muted">${onTrack} more on track</span></div>
+    <div class="tile"><span class="label">Need attention</span><span class="v">${risk}</span><span class="small muted">at risk, behind or missed</span></div>
+    <div class="tile"><span class="label">Team pulse</span><span class="v">${P.overall!=null?P.overall.toFixed(1):"—"}<small>${P.overall!=null?" / 10":""}</small></span><span class="small muted">${P.n} ${P.n===1?"person":"people"} checked in</span></div>
+  </div>`;
+  // what this could mean
+  const bullets = interpret(rows, P, Pprev);
+  html += `<div class="reading"><span class="label">What this could mean</span><h3>A first reading</h3>
+    <p class="small muted">Worked out from the numbers and scores on this page. It points at questions to discuss; it doesn't prove why anything happened.</p>
+    <ul>${bullets.map(([k,t])=>`<li><b>${h(k)}.</b> ${h(t)}</li>`).join("")}</ul></div>`;
+  // AI reading
+  const saved = S.checkin.interpretation;
+  html += `<div class="ai" id="aiBox"><div class="btnrow" style="justify-content:space-between"><div><span class="label">A deeper read</span><h3>Ask Claude to interpret this quarter</h3></div>
+      <div class="btnrow"><button class="btn" id="aiGo"${S.sample?"":" hidden"}>${saved?"Ask again":"Interpret this quarter"}</button><button class="btn ghost" id="aiStop" hidden>Stop</button></div></div>
+    <p class="small muted" id="aiNote">${S.sample ? "Claude reads the goals, results, team scores and any reflections people chose to share (without names), then suggests what it might mean and what to ask next. Uses your own Claude usage." : (S.local ? "Available when this page is opened as a Claude artifact. The first reading above works everywhere." : "Available when this page is opened in claude.ai.")}</p>
+    <div class="ai-out" id="aiOut">${saved ? h(saved.text) : ""}</div>
+    <div class="btnrow"><span class="small muted" id="aiMeta">${saved ? `Saved to ${h(qLabel(S.q))} ${when(saved.at)}${saved.by?" by "+h(nameOf(saved.by)):""}` : ""}</span><button class="btn ghost" id="aiSave" hidden>Save this reading for the team</button></div></div>`;
+  // goals progress
+  html += `<div class="panel" style="gap:18px"><div class="btnrow" style="justify-content:space-between"><div><span class="label">Goals</span><h3>Progress toward each target</h3></div>
+    <div class="legend"><span><i style="width:18px;height:8px;border-radius:4px;background:var(--ink-2)"></i>share of the way from baseline to target</span><span><i style="width:2px;height:12px;background:var(--ink)"></i>target</span></div></div>`;
+  for (const [k,n] of VENTURES){
+    const rs = rows.filter(r=>r.m.venture===k); if (!rs.length) continue;
+    html += `<div class="v-${k}"><div class="vhead" style="margin-bottom:4px"><h3 style="font-size:19px">${h(n)}</h3><span class="vtag">${k}</span></div><div class="bars">${rs.map(r => {
+      const val = isNum(r.score) ? `${fmt(r.e.actual, r.m.unit)} of ${fmt(r.target, r.m.unit)}` : (r.e.actualText ? r.e.actualText : "No result yet");
+      const w = isNum(r.score) ? Math.max(0, Math.min(r.score, 1.25)) / 1.25 * 100 : 0;
+      const t = isNum(r.score) ? `${r.m.name}: ${pct(r.score)} of the way${r.basis==="gap"?" from baseline":""} to target` : r.m.name;
+      return `<div class="bar"><span>${h(r.m.name)}</span>
+        ${isNum(r.score) ? `<div class="track" data-tip="${h(t)}"><i style="width:${w}%"></i><span class="goalmark" style="left:${100/1.25}%"></span></div>` : `<span class="small muted" style="overflow-wrap:anywhere">${h(val)}</span>`}
+        <span class="val">${r.progress ? `<span class="${progClass(r.progress)}">${h(r.progress)}</span>` : ""}${isNum(r.score) ? `<br>${h(val)}` : ""}</span></div>`; }).join("")}</div></div>`;
+  }
+  html += `</div>`;
+  // pulse dot plot
+  html += `<div class="panel" style="gap:12px"><div class="btnrow" style="justify-content:space-between"><div><span class="label">Pulse</span><h3>How the quarter felt</h3></div>
+    <div class="legend"><span><i style="width:10px;height:10px;border-radius:50%;background:var(--ink-2)"></i>one person</span><span><i style="width:3px;height:12px;background:var(--accent)"></i>team average</span>${Pprev.n?`<span><i style="width:10px;height:10px;border-radius:50%;border:1.5px dashed var(--ink-2)"></i>${h(qLabel(prevQ(S.q)))} average</span>`:""}</div></div>`;
+  if (!P.n) html += waiting("No pulses saved for this quarter yet. Each person adds theirs on the Pulse tab.");
+  else {
+    const x = v => (v - 1) / 9 * 100;
+    html += `<div class="dots">${P.dims.map(d => { const pv = Pprev.dims.find(y=>y.k===d.k);
+      return `<div class="drow"><span>${h(d.t)}</span><div class="dtrack" aria-label="${h(d.t)} scores">
+        ${[1,5,10].map(t=>`<span class="tick" style="left:${x(t)}%">${t}</span>`).join("")}
+        ${pv && pv.avg!=null ? `<span class="prev" style="left:${x(pv.avg)}%" data-tip="${h(qLabel(prevQ(S.q)))} average ${pv.avg.toFixed(1)}"></span>`:""}
+        ${d.vals.map((v,i)=>`<span class="d" style="left:${x(v)}%;transform:translateY(${(i%3-1)*5}px)" data-tip="One score: ${v}"></span>`).join("")}
+        ${d.avg!=null?`<span class="avg" style="left:${x(d.avg)}%" data-tip="Team average ${d.avg.toFixed(1)}"></span>`:""}</div>
+        <span class="val small muted" style="text-align:right">${d.avg!=null?`avg <b style="color:var(--ink)">${d.avg.toFixed(1)}</b> · ${d.min}–${d.max}`:"—"}</span></div>`; }).join("")}</div>`;
+    // principles
+    html += `<div class="panel" style="gap:10px;margin-top:18px"><div class="btnrow" style="justify-content:space-between"><span class="label">Principles check</span>
+      <div class="legend"><span><i style="width:10px;height:10px;border-radius:2px;background:var(--good)"></i>Living it</span><span><i style="width:10px;height:10px;border-radius:2px;background:var(--warn)"></i>Partly</span><span><i style="width:10px;height:10px;border-radius:2px;background:var(--bad)"></i>Not yet</span></div></div>
+      <div class="bars">${P.prin.map(p => `<div class="bar"><span>${h(p.t)}</span>${p.n ? `<div class="stack" data-tip="${p.c.living} living it · ${p.c.partly} partly · ${p.c.notyet} not yet">${["living","partly","notyet"].map((k,i)=>p.c[k]?`<i style="flex:${p.c[k]};background:var(--${["good","warn","bad"][i]})"></i>`:"").join("")}</div>` : `<span class="small muted">No ratings</span>`}
+        <span class="val">${p.n?`${p.c.living} · ${p.c.partly} · ${p.c.notyet}`:""}</span></div>`).join("")}</div>
+      ${P.prin.some(p=>p.notes.length) ? `<details><summary>Evidence people gave</summary><ul class="small">${P.prin.flatMap(p => p.notes.map(n => `<li><b>${h(p.t)}:</b> ${h(n)}</li>`)).join("")}</ul></details>` : ""}</div>`;
+    if (P.shared.length) html += `<details><summary>Shared reflections (${P.shared.length})</summary><div class="tablewrap"><table class="data"><thead><tr><th>Prompt</th><th>What people wrote</th></tr></thead><tbody>${PROMPTS.map((q,i)=>{ const a = P.shared.map(s=>s[i]).filter(Boolean); return a.length?`<tr><td>${h(q)}</td><td>${a.map(x=>`<p style="margin:0 0 6px">${h(x)}</p>`).join("")}</td></tr>`:""; }).join("")}</tbody></table></div></details>`;
+  }
+  html += `</div>`;
+  // table + export
+  html += `<details><summary>See every number as a table</summary><div class="tablewrap" style="margin-top:10px"><table class="data"><thead><tr><th>Venture</th><th>Goal</th><th>Baseline</th><th>Target</th><th>Actual</th><th>Progress</th><th>Owner</th><th>Notes</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td>${h(r.m.venture)}</td><td>${h(r.m.name)}</td><td>${h(r.m.baseline||"")}</td><td>${h(isNum(r.target)?fmt(r.target,r.m.unit):(r.m.target||""))}</td><td>${h(isNum(r.e.actual)?fmt(r.e.actual,r.m.unit):(r.e.actualText||""))}</td><td>${h(r.progress)}</td><td>${h(r.e.owner||"")}</td><td>${h(r.e.note||"")}</td></tr>`).join("")}
+    </tbody></table></div></details>
+    <div class="btnrow"><button class="btn ghost" id="exportCsv"${S.downloads?"":" hidden"}>Download ${h(qLabel(S.q))} results (CSV)</button><span class="saved" id="exMsg"></span></div>` + backupPanel();
+  body.innerHTML = html;
+  wireBackup();
+  wireResults(rows, P, bullets);
+}
+function wireResults(rows, P, bullets){
+  const go = $("#aiGo"), stop = $("#aiStop"), out = $("#aiOut"), saveBtn = $("#aiSave"), note = $("#aiNote");
+  if (aiDraft){ out.textContent = aiDraft; saveBtn.hidden = S.readOnly; }
+  go && (go.onclick = async () => {
+    aiCtl?.abort(); aiCtl = new AbortController(); go.disabled = true; stop.hidden = false; saveBtn.hidden = true; out.textContent = "Thinking…";
+    try {
+      const { text, truncated } = await S.sample(buildPrompt(rows, P, bullets), { signal: aiCtl.signal, cache:false, onText: ({text}) => { out.textContent = text; } });
+      aiDraft = text; out.textContent = text; saveBtn.hidden = S.readOnly;
+      if (truncated) note.textContent = "The reading was cut short. Ask again for a shorter version.";
+    } catch(e){
+      out.textContent = e?.text || "";
+      if (e?.code === "cancelled") {}
+      else if (["not_granted","sampling_disabled","capability_disabled","capability_removed","not_declared"].includes(e?.code)){ note.textContent = "Claude isn't available to this page for you. The first reading above still works."; go.hidden = true; }
+      else if (e?.code === "rate_limited") note.textContent = "You've hit a usage limit. Try again later.";
+      else if (e?.code === "refused") note.textContent = "Claude couldn't answer this one. Try again after editing notes or reflections.";
+      else note.textContent = "Something interrupted the reading. Try again.";
+    }
+    go.disabled = false; stop.hidden = true;
+  });
+  stop && (stop.onclick = () => aiCtl?.abort());
+  saveBtn && (saveBtn.onclick = async () => {
+    saveBtn.disabled = true;
+    try { const ref = S.db.doc("checkins/" + S.q); const snap = await ref.get(); const interpretation = {text: aiDraft, by:S.uid, at:new Date().toISOString()};
+      if (snap.exists) await ref.update({interpretation}); else await ref.set({quarter:S.q, createdAt:interpretation.at, entries:{}, interpretation});
+      aiDraft = ""; saveBtn.hidden = true; $("#aiMeta").textContent = "Saved for the team.";
+    } catch(e){ $("#aiMeta").textContent = "Couldn't save. Saving readings needs Contributor access."; }
+    saveBtn.disabled = false;
+  });
+  const ex = $("#exportCsv");
+  ex && (ex.onclick = async () => {
+    const esc = v => { const s = String(v ?? ""); return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s; };
+    const lines = [["Quarter","Venture","Goal","Status","Baseline","Target","Target number","Actual","Result text","Progress","Owner","Notes","Updated"].join(",")];
+    rows.forEach(r => lines.push([qLabel(S.q), VNAME[r.m.venture], r.m.name, STATUS[r.m.status]||r.m.status, r.m.baseline, r.m.target, r.target, r.e.actual, r.e.actualText, r.progress, r.e.owner, r.e.note, r.e.at].map(esc).join(",")));
+    lines.push(""); lines.push("Pulse dimension,Team average,Lowest,Highest,Responses");
+    P.dims.forEach(d => lines.push([d.t, d.avg!=null?d.avg.toFixed(2):"", d.min??"", d.max??"", d.vals.length].map(esc).join(",")));
+    try { await S.downloads.save({filename:`check-in-${S.q}.csv`, data: lines.join("\n")}); $("#exMsg").textContent = ""; }
+    catch(e){ $("#exMsg").textContent = e?.code === "cancelled" || e?.code === "declined" ? "" : "The download didn't start."; }
+  });
+}
+function buildPrompt(rows, P, bullets){
+  const goals = rows.map(r => ({venture: VNAME[r.m.venture], goal: r.m.name, status: STATUS[r.m.status], baseline: r.m.baseline || null,
+    target: isNum(r.target) ? r.target + (r.m.unit||"") : (r.m.target || null), aspiration: r.m.aspiration || null, why: r.m.why || null,
+    actual: isNum(r.e.actual) ? r.e.actual + (r.m.unit||"") : (r.e.actualText || null), progress: r.progress || null,
+    share_of_way_to_target: isNum(r.score) ? Math.round(r.score*100) + "%" : null, note: r.e.note || null}));
+  const pulse = {respondents: P.n, dimensions: P.dims.map(d => ({dimension:d.t, average: d.avg!=null?+d.avg.toFixed(1):null, lowest:d.min, highest:d.max})),
+    principles: P.prin.map(p => ({principle:p.t, living_it:p.c.living, partly:p.c.partly, not_yet:p.c.notyet, evidence:p.notes})),
+    shared_reflections: PROMPTS.map((q,i) => ({prompt:q, answers: P.shared.map(s=>s[i]).filter(Boolean)})).filter(x=>x.answers.length)};
+  return `You are helping a small founder-led team run its quarterly check-in. They run three connected ventures: Soft Queer Wealth (Black queer media and community), The Mahogany Pages (a Black queer and sapphic event and resource discovery platform) and Softer Strategies (a digital strategy and brand consultancy). Their north star: "Build things that make a difference people can actually feel." Their guiding principles: access over exclusivity, impact over optics, community over extraction, sustainability over burnout, freedom with purpose. Their check-in question: "Are we building businesses that give us the freedom to do more of the work we love, with the people we care about, for communities we believe in?"
+
+Below is the data for ${qLabel(S.q)} as JSON. A null actual means nothing was recorded; never treat it as zero and never invent numbers. Statuses: Current = confirmed baseline, Historical = past figure, Proposed = target, Aspirational = long-term hope, To establish = no baseline yet.
+
+GOALS AND RESULTS:
+${JSON.stringify(goals)}
+
+TEAM PULSE (scores 1-10, anonymous):
+${JSON.stringify(pulse)}
+
+A first automated reading already said:
+${bullets.map(([k,t]) => "- " + k + ": " + t).join("\n")}
+
+Write a short interpretation for the team, in plain, warm, direct language (no jargon, no hype). Use these headings, each followed by 2-4 short bullet points starting with "- ":
+What the numbers say
+What the people say
+Where they agree or disagree
+What this could mean
+Questions to discuss next
+Stop, start, continue
+
+Rules: be specific and cite goals and scores by name; when data is thin or missing, say so and say what to measure instead of speculating; don't diagnose individuals; keep the whole answer under 400 words; plain text, headings on their own lines, no markdown symbols other than "- ".`;
+}
+
+
+// ---------- LOCAL MODE (when opened outside claude.ai, e.g. GitHub Pages) ----------
+const DEFAULT_PLAN = {"items": [{"id": "SQW-01", "venture": "SQW", "area": "Audience", "name": "Instagram followers", "status": "current", "baseline": "~30,000", "baselineNum": 30000, "target": "33,000 by end of Q4", "targetNum": 33000, "unit": "", "aspiration": "50,000 (an aspiration, not a verified sponsorship threshold)", "why": "Expand cultural reach, community influence and potential sponsorship opportunities.", "measure": "Follower count on the last day of the quarter"}, {"id": "SQW-02", "venture": "SQW", "area": "Audience", "name": "Email + SMS subscribers", "status": "proposed", "baseline": "To establish", "baselineNum": null, "target": "250 opted-in subscribers", "targetNum": 250, "unit": "", "aspiration": "", "why": "Build direct relationships, reduce dependence on Instagram, strengthen communication and create sponsorship inventory.", "measure": "Opted-in subscribers in the email/SMS platform"}, {"id": "SQW-03", "venture": "SQW", "area": "Media", "name": "Substack + YouTube publishing", "status": "proposed", "baseline": "Not yet consistent", "baselineNum": null, "target": "A consistent publishing strategy for both", "targetNum": null, "unit": "", "aspiration": "Multi-platform media revenue", "why": "Diversify storytelling, education, audience acquisition and potential revenue.", "measure": "Documented cadence and posts published per month"}, {"id": "SQW-04", "venture": "SQW", "area": "Revenue", "name": "New paid brand partnerships", "status": "proposed", "baseline": "0 this quarter", "baselineNum": 0, "target": "2 new paid collaborations", "targetNum": 2, "unit": "", "aspiration": "", "why": "Generate revenue for the polycule, compensate creative labor and fund community and media work.", "measure": "Signed, paid collaborations started this quarter"}, {"id": "SQW-05", "venture": "SQW", "area": "Ecosystem", "name": "Referral traffic to TMPs", "status": "establish", "baseline": "To establish in October", "baselineNum": null, "target": "+25% once the baseline is set", "targetNum": null, "unit": "", "aspiration": "", "why": "Turn media attention into tangible community access and discovery.", "measure": "TMPs sessions referred from SQW channels"}, {"id": "SQW-06", "venture": "SQW", "area": "Impact", "name": "Community feedback responses", "status": "proposed", "baseline": "0 this quarter", "baselineNum": 0, "target": "20 meaningful responses", "targetNum": 20, "unit": "", "aspiration": "", "why": "Learn whether our content supports education, representation, belonging and awareness of relationship diversity.", "measure": "Qualitative responses collected (survey, DMs shared with permission, comments)"}, {"id": "SQW-07", "venture": "SQW", "area": "Sustainability", "name": "Revenue, expense + labor baselines", "status": "establish", "baseline": "Not yet measured", "baselineNum": null, "target": "Baselines established", "targetNum": null, "unit": "", "aspiration": "Compensate the polycule; a sustainable media enterprise", "why": "Work toward compensating contributors and building a sustainable media business.", "measure": "Monthly revenue, expenses and hours by contributor"}, {"id": "TMPs-01", "venture": "TMPs", "area": "Audience", "name": "Monthly users", "status": "historical", "baseline": "~1,500", "baselineNum": 1500, "target": "2,500 by December 2026", "targetNum": 2500, "unit": "", "aspiration": "5,000 before Pride season 2027", "why": "Build a trusted audience before peak Pride discovery season and a foundation for future app adoption.", "measure": "Monthly active users in platform analytics"}, {"id": "TMPs-02", "venture": "TMPs", "area": "Community supply", "name": "Active collaborators", "status": "current", "baseline": "1 confirmed (House of Yes)", "baselineNum": 1, "target": "10 unique active collaborators", "targetNum": 10, "unit": "", "aspiration": "", "why": "Better geographic representation, more community knowledge and less reliance on internal discovery.", "measure": "Collaborators who contributed events or resources this quarter"}, {"id": "TMPs-03", "venture": "TMPs", "area": "Community supply", "name": "Trusted curators (DC, Baltimore, NYC)", "status": "proposed", "baseline": "To establish", "baselineNum": null, "target": "3 active curators", "targetNum": 3, "unit": "", "aspiration": "", "why": "Improve local knowledge, cultural relevance, coverage and community participation.", "measure": "Curators submitting at least monthly"}, {"id": "TMPs-04", "venture": "TMPs", "area": "Community supply", "name": "Direct event submissions", "status": "proposed", "baseline": "To establish", "baselineNum": null, "target": "25 submissions", "targetNum": 25, "unit": "", "aspiration": "Reliable community-powered submissions before Pride 2027", "why": "Make discovery more participatory and reduce manual admin work.", "measure": "Submissions received through the TMPs form"}, {"id": "TMPs-05", "venture": "TMPs", "area": "Automation", "name": "New listings via automated or partner intake", "status": "proposed", "baseline": "Manual today", "baselineNum": null, "target": "Pilot flyer extraction; 50% of new listings", "targetNum": 50, "unit": "%", "aspiration": "", "why": "Reduce repetitive data entry and create scalable event ingestion.", "measure": "Share of new listings by intake method"}, {"id": "TMPs-06", "venture": "TMPs", "area": "Automation", "name": "Automated backend maintenance", "status": "proposed", "baseline": "Manual", "baselineNum": null, "target": "Scheduled jobs prototyped; manual event-management hours cut by 50%", "targetNum": null, "unit": "", "aspiration": "", "why": "Let approved events publish, update and expire without constant developer intervention.", "measure": "Manual hours per month vs. the October baseline"}, {"id": "TMPs-07", "venture": "TMPs", "area": "Trust", "name": "Data freshness", "status": "proposed", "baseline": "To establish", "baselineNum": null, "target": "95% of upcoming listings verified current", "targetNum": 95, "unit": "%", "aspiration": "", "why": "Preserve user trust and keep the platform useful.", "measure": "Share of upcoming listings with current, verified information"}, {"id": "TMPs-08", "venture": "TMPs", "area": "Revenue", "name": "Paid monetization experiment", "status": "proposed", "baseline": "None validated", "baselineNum": 0, "target": "At least 1 validated experiment", "targetNum": 1, "unit": "", "aspiration": "Sponsored placements, featured listings, affiliate revenue, brand partnerships, concierge products", "why": "Cover costs, compensate contributors and build toward sustainability.", "measure": "Experiments run and revenue from each"}, {"id": "TMPs-09", "venture": "TMPs", "area": "Impact", "name": "Documented user stories", "status": "proposed", "baseline": "0 this quarter", "baselineNum": 0, "target": "10 meaningful user stories", "targetNum": 10, "unit": "", "aspiration": "", "why": "Learn whether TMPs helps people discover spaces, attend events, support businesses and access resources.", "measure": "Stories documented with permission"}, {"id": "TMPs-10", "venture": "TMPs", "area": "Efficiency", "name": "Manual hours per 100 published events", "status": "establish", "baseline": "To establish in October", "baselineNum": null, "target": "Track the trend", "targetNum": null, "unit": "", "aspiration": "Falling as volume grows", "why": "Shows whether the platform is genuinely becoming more scalable as it grows.", "measure": "Manual hours divided by (published events / 100)", "direction": "down"}, {"id": "SS-01", "venture": "SS", "area": "Clients", "name": "Paying clients", "status": "current", "baseline": "1", "baselineNum": 1, "target": "Deliver the 3-month engagement; assess readiness for more", "targetNum": null, "unit": "", "aspiration": "An aligned client roster", "why": "Independent income plus professional learning, relationships and experiences.", "measure": "Active paying clients"}, {"id": "SS-02", "venture": "SS", "area": "Revenue", "name": "Contracted client revenue", "status": "current", "baseline": "$2,500/month for 3 months", "baselineNum": null, "target": "Track contracted, cash collected and profit separately", "targetNum": null, "unit": "", "aspiration": "", "why": "Create a sustainable independent revenue stream.", "measure": "Contracted $, cash collected $ and profit $"}, {"id": "SS-03", "venture": "SS", "area": "Clients", "name": "Client satisfaction", "status": "proposed", "baseline": "To establish", "baselineNum": null, "target": "8/10 or higher", "targetNum": 8, "unit": "/10", "aspiration": "", "why": "Reputation, client trust, referrals and future opportunities.", "measure": "Client rating in a structured review"}, {"id": "SS-04", "venture": "SS", "area": "Outcomes", "name": "Client outcomes + brand authority", "status": "establish", "baseline": "To establish", "baselineNum": null, "target": "Visibility baselines set; improvements documented", "targetNum": null, "unit": "", "aspiration": "", "why": "Show tangible business value and help clients build credibility and authority.", "measure": "Branded search, engagement, qualified inquiries, content performance, client-reported outcomes"}, {"id": "SS-05", "venture": "SS", "area": "Portfolio", "name": "Permission-based case study", "status": "proposed", "baseline": "0", "baselineNum": 0, "target": "1 case study", "targetNum": 1, "unit": "", "aspiration": "", "why": "Build credibility, attract aligned clients and document the consultancy's value.", "measure": "Published case studies"}, {"id": "SS-06", "venture": "SS", "area": "Sustainability", "name": "Effective hourly earnings + profitability", "status": "establish", "baseline": "Not yet measured", "baselineNum": null, "target": "Established", "targetNum": null, "unit": "", "aspiration": "", "why": "Make sure the business earns meaningful income without an unsustainable workload.", "measure": "Revenue divided by hours worked; profit by service"}, {"id": "SS-07", "venture": "SS", "area": "Learning", "name": "Learning outcome per client", "status": "proposed", "baseline": "To establish", "baselineNum": null, "target": "At least 1 per client", "targetNum": null, "unit": "", "aspiration": "", "why": "Make entrepreneurship a source of knowledge, development, travel, relationships and new perspectives.", "measure": "A documented learning outcome per client"}], "updatedAt": "2026-10-16T00:00:00Z"};
+const LS_KEY = "bttm.data.v1";
+function deepMerge(a, b){ const o = {...(a||{})}; for (const [k,v] of Object.entries(b||{})){ o[k] = v && typeof v === "object" && !Array.isArray(v) && o[k] && typeof o[k] === "object" && !Array.isArray(o[k]) ? deepMerge(o[k], v) : v; } return o; }
+function makeLocalDb(){
+  let docs = {}; try { docs = JSON.parse(localStorage.getItem(LS_KEY) || "{}") || {}; } catch { docs = {}; }
+  const listeners = new Set();
+  const persist = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(docs)); } catch {} listeners.forEach(fn => fn()); };
+  const snap = p => ({ id: p.split("/").pop(), exists: p in docs, data: () => docs[p], metadata: {fromCache:false, hasPendingWrites:false} });
+  if (!docs["plan/metrics"]) docs["plan/metrics"] = DEFAULT_PLAN;
+  if (!docs["meta/quarters"]) docs["meta/quarters"] = {list:["2026-Q4"], current:"2026-Q4"};
+  const api = {
+    doc: p => ({ path:p, get: async () => snap(p), set: async d => { docs[p] = JSON.parse(JSON.stringify(d)); persist(); },
+      update: async d => { if (!(p in docs)) throw {code:"invalid_argument"}; docs[p] = deepMerge(docs[p], JSON.parse(JSON.stringify(d))); persist(); },
+      delete: async () => { delete docs[p]; persist(); },
+      onSnapshot: fn => { const l = () => fn(snap(p)); listeners.add(l); setTimeout(l, 0); return () => listeners.delete(l); } }),
+    collection: c => ({ onSnapshot: fn => { const l = () => { const ds = Object.keys(docs).filter(k => k.startsWith(c + "/") && k.split("/").length === c.split("/").length + 1).map(snap); fn({docs:ds, size:ds.length, empty:!ds.length}); };
+      listeners.add(l); setTimeout(l, 0); return () => listeners.delete(l); } }),
+    exportAll: () => JSON.parse(JSON.stringify(docs)),
+    importAll: obj => { docs = obj; persist(); },
+  };
+  return api;
+}
+function localName(){ return store.get("bttm.name") || ""; }
+function makeLocalUser(){
+  const nm = localName();
+  const id = nm ? "local-" + nm.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") : null;
+  const names = () => { try { return JSON.parse(store.get("bttm.names") || "{}"); } catch { return {}; } };
+  if (id){ const n = names(); n[id] = nm; store.set("bttm.names", JSON.stringify(n)); }
+  return { me: async () => ({id, name:nm, avatarUrl:"", canEdit:true, isOwner:true, email:null}), can: async () => true,
+    profiles: async ids => { const n = names(); return Object.fromEntries([].concat(ids).map(i => [i, {id:i, name: n[i] || "", avatarUrl:""}])); } };
+}
+const localDownloads = { save: async ({filename, data}) => { const url = URL.createObjectURL(new Blob([data], {type: filename.endsWith(".json") ? "application/json" : "text/csv"})); const a = document.createElement("a"); a.href = url; a.download = filename; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); } };
+function renderLocalWho(){
+  const el = $("#who");
+  el.innerHTML = `<label class="small muted" for="localName">Checking in as</label><input id="localName" type="text" value="${h(localName())}" placeholder="Your name" style="background:var(--field);border:1px solid var(--rule-2);border-radius:7px;padding:5px 9px;width:130px">`;
+  $("#localName").addEventListener("change", e => { store.set("bttm.name", e.target.value.trim()); location.reload(); });
+}
+function backupPanel(){
+  if (!S.local) return "";
+  return `<div class="ai"><span class="label">Saving your data</span><h3>This copy stores everything in this browser</h3>
+    <p class="small muted">Outside claude.ai there's no shared team storage, so check-ins, pulses and goal edits are saved on this device only. Download a backup after each check-in and keep it somewhere private. Restore it here, or on another computer, to pick up where you left off.</p>
+    <div class="btnrow"><button class="btn" id="bkExport">Download backup (JSON)</button><label class="btn ghost" for="bkImport" style="cursor:pointer">Restore from backup</label><input type="file" id="bkImport" accept="application/json,.json" class="sr"><span class="saved" id="bkMsg"></span></div></div>`;
+}
+function wireBackup(){
+  const ex = $("#bkExport"), im = $("#bkImport"); if (!ex) return;
+  ex.onclick = () => localDownloads.save({filename:`check-in-backup-${new Date().toISOString().slice(0,10)}.json`, data: JSON.stringify({app:"building-things-that-matter", version:1, savedAt:new Date().toISOString(), docs:S.db.exportAll()}, null, 2)});
+  im.onchange = async () => { const f = im.files[0]; if (!f) return; const msg = $("#bkMsg");
+    try { const j = JSON.parse(await f.text()); if (!j || typeof j.docs !== "object" || !j.docs["plan/metrics"]) throw 0;
+      if (im.dataset.confirm !== "1"){ im.dataset.confirm = "1"; im._pending = j; msg.className = "saved"; msg.innerHTML = `Replace this browser's data with the backup from ${h(when(j.savedAt))}? <button class="linkbtn" id="bkYes">Yes, restore</button>`;
+        $("#bkYes").onclick = () => { S.db.importAll(im._pending.docs); location.reload(); }; return; }
+    } catch { msg.className = "saved err"; msg.textContent = "That file isn't a backup from this page."; }
+    im.value = ""; };
+}
+
+// ---------- data wiring ----------
+function renderWho(me){
+  const el = $("#who");
+  if (!me || !me.id){ el.textContent = S.dbReady && !S.db ? "Read-only view" : ""; return; }
+  el.innerHTML = `${me.avatarUrl?`<img alt="" src="${h(me.avatarUrl)}">`:""}<span>${h(me.name || "You")}${S.readOnly ? " · view only" : ""}</span>`;
+}
+let unsubQ = null;
+function subscribeQuarter(){
+  if (!S.db) return;
+  unsubQ?.();
+  S.checkin = {};
+  unsubQ = S.db.doc("checkins/" + S.q).onSnapshot(snap => {
+    S.checkin = snap.exists ? (snap.data() || {}) : {};
+    const ids = Object.values(S.checkin.entries||{}).map(e=>e.by).filter(Boolean); if (S.checkin.interpretation?.by) ids.push(S.checkin.interpretation.by);
+    resolveNames([...new Set(ids)]);
+    if (S.tab==="checkin") syncCheckin(); else if (S.tab==="results") renderResults();
+  }, () => {});
+}
+async function boot(){
+  const saved = (location.hash||"").slice(1) || store.get("bttm.tab");
+  setTab(["north","goals","checkin","pulse","results"].includes(saved) ? saved : "north");
+  renderQuarterSelect();
+  let db, user, sample, downloads;
+  if (!window.claude?.use){ S.local = true; db = makeLocalDb(); user = makeLocalUser(); sample = null; downloads = localDownloads; }
+  else [db, user, sample, downloads] = await Promise.all(["db","user","sample","downloads"].map(n => window.claude.use(n).catch(() => null)));
+  S.db = db; S.user = user; S.sample = sample; S.downloads = downloads; S.dbReady = true;
+  let me = null;
+  if (user){
+    me = await user.me(); S.uid = me.id; S.isAdmin = !!me.canEdit;
+    const cw = await user.can("data.write"); S.canWrite = cw; S.readOnly = cw === false;
+    if (S.uid) S.profiles[S.uid] = {name: me.name, avatarUrl: me.avatarUrl};
+  }
+  if (S.local) renderLocalWho(); else renderWho(me);
+  if (!db){ renderTab(true); return; }
+  db.doc("plan/metrics").onSnapshot(snap => { S.plan = snap.exists ? (snap.data() || {items:[]}) : {items:[]}; renderTab(); }, () => {});
+  db.doc("meta/quarters").onSnapshot(snap => {
+    const d = snap.exists ? snap.data() : null;
+    if (d && Array.isArray(d.list) && d.list.length){ const firstLoad = !S._qLoaded; S._qLoaded = true; S.quarters = d;
+      if (firstLoad && d.current && d.current !== S.q){ S.q = d.current; subscribeQuarter(); renderTab(true); } }
+    renderQuarterSelect(); renderAdminQuarter();
+  }, () => {});
+  db.collection("pulse").onSnapshot(snap => {
+    S.pulses = {}; snap.docs.forEach(d => { S.pulses[d.id] = d.data(); });
+    resolveNames(Object.keys(S.pulses));
+    if (S.tab==="pulse") renderTeamPulse(); if (S.tab==="results") renderResults();
+  }, () => {});
+  if (S.uid){
+    db.doc("data/users/" + S.uid + "/reflections").get().then(s => { S.myPrivate = s.exists ? s.data() : {}; if (S.tab==="pulse") renderPulse(true); }).catch(() => {});
+  }
+  subscribeQuarter();
+  renderTab(true);
+}
+// admin: start next quarter
+function renderAdminQuarter(){
+  let b = $("#newQ");
+  if (!S.isAdmin || !S.db){ b?.remove(); return; }
+  const latest = [...(S.quarters.list||[S.q])].sort().at(-1); const nq = nextQ(latest);
+  if (!b){ b = document.createElement("button"); b.id = "newQ"; b.className = "btn ghost"; b.style.fontSize = "13px"; b.style.padding = "6px 12px"; $(".mast-right").prepend(b); }
+  b.textContent = `Open ${qLabel(nq)}`; b.dataset.confirm = "";
+  b.onclick = async () => {
+    if (b.dataset.confirm !== "1"){ b.dataset.confirm = "1"; b.textContent = `Open ${qLabel(nq)} for everyone?`; return; }
+    try { await S.db.doc("meta/quarters").set({list:[...new Set([...(S.quarters.list||[]), nq])].sort(), current:nq, updatedAt:new Date().toISOString()});
+      S.q = nq; subscribeQuarter(); renderQuarterSelect(); renderTab(true); } catch(e){ b.textContent = "Couldn't open the quarter"; }
+  };
+}
+window.addEventListener("hashchange", () => { const t = location.hash.slice(1); if (["north","goals","checkin","pulse","results"].includes(t) && t !== S.tab) setTab(t); });
+boot();
+})();
+</script>
+
+</body>
+</html>
